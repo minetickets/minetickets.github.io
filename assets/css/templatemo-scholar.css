@@ -25,7 +25,7 @@ Table of contents
 font & reset css
 --------------------------------------------- 
 */
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900");
+@import url("https://fonts.googleapis.com/css2?family=Kanit:wght@100;200;300;400;500;600;700;800;900");
 /* 
 ---------------------------------------------
 reset
@@ -77,7 +77,7 @@ header, nav, section, article, aside, footer, hgroup {
 }
 
 html, body {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Kanit', sans-serif;
   -ms-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -116,7 +116,7 @@ Global Styles
 */
 html,
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Kanit', sans-serif;
 }
 
 ::selection {
@@ -300,9 +300,9 @@ Header Style
 }
 
 .header-area {
-  /* position: absolute;
+  position: absolute;
   background-color: transparent;
-  top: 40px; */
+  top: 40px;
   left: 0;
   right: 0;
   z-index: 100;
@@ -347,7 +347,7 @@ Header Style
 .header-area .main-nav #search input {
   background-color: rgba(255, 255, 255, 0.10);
   height: 44px;
-  width: 200px;
+  width: 250px;
   border-radius: 23px;
   border: none;
   color: #fff;
@@ -672,11 +672,12 @@ Banner Style
   background-repeat: no-repeat;
   background-size: cover;
   padding: 170px 0px 120px 0px;
-  display: none;
 }
 
 .main-banner .item-1 {
-  background-image: url(../images/banner-item-01.jpg);
+  /* background-image: url(../images/banner-item-01.jpg); */
+  border: solid 1px #ddd;
+  border-radius: 50%!important;
 }
 
 .main-banner .item-2 {
@@ -717,6 +718,8 @@ Banner Style
 }
 
 .main-banner .item p {
+  font-size: 24px;
+  line-height: 30px;
   color: #fff;
   width: 65%;
 }
@@ -731,7 +734,7 @@ Banner Style
 }
 
 .main-banner .item .buttons .main-button a {
-  font-size: 14px;
+  font-size: 26px;
   color: #7a6ad8;
   background-color: #fff;
   display: inline-block;
@@ -904,8 +907,8 @@ About Style
 
 h2.accordion-header button {
   padding: 15px 25px;
-  font-family: 'Poppins';
-  font-size: 16px;
+  font-family: 'Kanit';
+  font-size: 22px;
   font-weight: 600;
 }
 
@@ -932,7 +935,7 @@ h2.accordion-header button {
 
 .accordion-body {
   padding: 0px 25px 30px 25px;
-  font-size: 14px;
+  font-size: 18px;
   line-height: 28px;
   color: #4a4a4a;
 }
@@ -1760,15 +1763,15 @@ body {
     margin-top: 80px;
   }
   .about-us {
-    margin-top: 130px;
+    margin-top: 100px;
   }
   .accordion {
     padding: 40px 25px 10px 25px;
   }
   .services .service-item .icon {
-    width: 150px;
-    height: 150px;
-    line-height: 150px;
+    width: 170px;
+    height: 170px;
+    line-height: 170px;
   }
   .about-us .section-heading {
     margin-left: 0px;
