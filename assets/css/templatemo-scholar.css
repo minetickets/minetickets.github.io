@@ -672,6 +672,7 @@ Banner Style
   background-repeat: no-repeat;
   background-size: cover;
   padding: 170px 0px 120px 0px;
+  text-align: center;
 }
 
 .main-banner .item-1 {
@@ -713,7 +714,7 @@ Banner Style
   font-weight: 700;
   color: #fff;
   line-height: 70px;
-  width: 60%;
+  /* width: 60%; */
   margin-bottom: 40px;
 }
 
@@ -721,16 +722,16 @@ Banner Style
   font-size: 16px;
   line-height: 30px;
   color: #fff;
-  width: 65%;
+  /* width: 65%; */
 }
 
 .main-banner .item .buttons {
-  display: flex;
+  /* display: flex; */
   margin-top: 50px;
 }
 
 .main-banner .item .buttons .main-button {
-  margin-right: 30px;
+  /* margin-right: 30px; */
 }
 
 .main-banner .item .buttons .main-button a {
