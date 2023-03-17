@@ -718,7 +718,7 @@ Banner Style
 }
 
 .main-banner .item p {
-  font-size: 24px;
+  font-size: 16px;
   line-height: 30px;
   color: #fff;
   width: 65%;
@@ -734,7 +734,7 @@ Banner Style
 }
 
 .main-banner .item .buttons .main-button a {
-  font-size: 26px;
+  font-size: 24px;
   color: #7a6ad8;
   background-color: #fff;
   display: inline-block;
@@ -908,7 +908,7 @@ About Style
 h2.accordion-header button {
   padding: 15px 25px;
   font-family: 'Kanit';
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 600;
 }
 
@@ -935,7 +935,7 @@ h2.accordion-header button {
 
 .accordion-body {
   padding: 0px 25px 30px 25px;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 28px;
   color: #4a4a4a;
 }
