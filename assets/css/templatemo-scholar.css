@@ -718,6 +718,15 @@ Banner Style
   margin-bottom: 40px;
 }
 
+.main-banner .item h6 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 30px;
+  /* width: 60%; */
+  margin-bottom: 10px;
+}
+
 .main-banner .item p {
   font-size: 16px;
   line-height: 30px;
@@ -731,7 +740,7 @@ Banner Style
 }
 
 .main-banner .item .buttons .main-button {
-  /* margin-right: 30px; */
+  margin-bottom: 30px;
 }
 
 .main-banner .item .buttons .main-button a {
