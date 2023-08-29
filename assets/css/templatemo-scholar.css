@@ -715,7 +715,7 @@ Banner Style
   color: #fff;
   line-height: 70px;
   /* width: 60%; */
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 .main-banner .item h6 {
@@ -724,6 +724,7 @@ Banner Style
   color: #fff;
   line-height: 30px;
   /* width: 60%; */
+  margin-top: 2rem;
   margin-bottom: 10px;
 }
 
@@ -732,6 +733,12 @@ Banner Style
   line-height: 30px;
   color: #fff;
   /* width: 65%; */
+}
+
+.main-banner .item .linebuttons {
+  width: 120px; 
+  margin: auto;
+  padding-top: 1rem;
 }
 
 .main-banner .item .buttons {
