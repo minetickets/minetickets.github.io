@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>Confirm Form - Mine Tickets</title>
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/fontawesome.css">
+    <link rel="stylesheet" href="assets/css/templatemo-scholar.css">
+    <link rel="stylesheet" href="assets/css/owl.css">
+    <link rel="stylesheet" href="assets/css/animate.css">
+  </head>
+  <body style="font-family:'Kanit',sans-serif;">
+    <div class="container" style="padding: 40px 10px;">
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <h1>Confirm Form</h1>
+          <p>วางข้อความ input แล้วกดปุ่มเพื่อสร้างคำสั่งคอนเฟิร์ม ก้อปจาก google sheet หรือ AppSheet</p>
+          <textarea id="comfirmInput" style="width:100%;min-height:180px;font-size:16px;padding:10px;border:1px solid #ccc;border-radius:8px;" placeholder="วางข้อความที่ได้จากตารางที่นี่"></textarea>
+          <button id="comfirmParse" class="btn btn-primary" style="margin-top:12px;">แปลงเป็นข้อความคอนเฟิร์ม</button>
+          <pre id="comfirmOutput" style="white-space:pre-wrap;background:#f8f9fa;border:1px solid #ddd;padding:16px;margin-top:14px;border-radius:8px;min-height:240px;">ยังไม่มีผลลัพธ์</pre>
+          <button id="comfirmCopy" class="btn btn-info" style="margin-top:12px;">คัดลอกข้อความ</button>
+          <span id="status"></span>
+        </div>
+      </div>
+    </div>
+    <script>
+      function formatDateFromString(text) {
+        const dt = new Date(text);
+        if (!isNaN(dt)) {
+          const day = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dt.getDay()];
+          const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][dt.getMonth()];
+          return `${day} ${dt.getDate()} ${mo} ${dt.getFullYear()}`;
+        }
+        const m = text.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        if (m) {
+          const d = new Date(`${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`);
+          if (!isNaN(d)) {
+            const day = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
+            const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];
+            return `${day} ${d.getDate()} ${mo} ${d.getFullYear()}`;
+          }
+        }
+        return text;
+      }
+
+    function formatNumber(num) {
+        const clean = String(num).replace(/,/g, '');
+        return Number(clean).toLocaleString('en-US');
+    }
+
+    function parseAppSheetInput(raw) {
+        const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+        const findLine = (match) => {
+            const idx = lines.findIndex((l) => new RegExp(match, 'i').test(l));
+            return idx >= 0 ? lines[idx + 1] : '';
+        };
+
+        const eventName = findLine('^Event$') || lines[0] || '';
+        const platform = findLine('^Web Service$') || 'AllTicket';
+        const zone = findLine('โซน|Preferred Zone') || '';
+        const basePrice = (findLine('ราคาบัตร|Preferred Price') || '').replace(/[฿$,]/g, '').trim();
+        const zone_s = findLine('โซน|Reserved Zone') || '';
+        const basePrice_s = (findLine('ราคา(สำรอง)|Reserved Price') || '').replace(/[฿$,]/g, '').trim();
+        const amount = Number((findLine('QTY') || '').replace(/[^0-9]/g, '') || 0);
+        const roundAt = findLine('รอบวันที่|Round Date') || '';
+        const feePer = Number((findLine('Profit|Ticks') || '').replace(/[^0-9]/g, '') || 0);
+
+        const parsedRound = formatDateFromString(roundAt);
+        const totalFee = feePer * amount;
+        const cleanPrice = formatNumber(basePrice) || '-';
+        const cleanPrice_s = basePrice_s&&(`(${formatNumber(basePrice_s)})`);
+
+        return `✨ คอนเฟิร์มงาน ${eventName}✨\n\n🎪 รอบวันที่ : ${parsedRound}\n🥇 โซนหลัก : ${zone} (${cleanPrice})\n🎟️ จำนวนบัตร : ${amount} ใบ\n💸 ค่ากด : ${feePer}*${amount} = ${totalFee} บาท\n\n📌 ข้อมูลสำหรับกดบัตร (${platform})\nUsername : \nPassword : \nช่องทางการชำระเงิน : \n\n💳 ช่องทางชำระเงิน: บัตรเครดิต, TrueMoney, Alipay, Wechat, Thai QR หรือ ชำระด้วยเงินสดที่ร้าน 7-Eleven) *กรณีชำระด้วยเงินสด ต้องชำระภายใน 30 นาที\n\n📣 หมายเหตุ\n• กดบัตรได้แล้ว ทางร้านจะ DM แจ้งทันที 🎟️\n• ลูกค้าต้อง standby รอชำระเงินค่าบัตรในช่วงเวลากด หากไม่สะดวกฝากทางร้านชำระได้ค่ะ\n📍 เงื่อนไขปัจจุบัน: ไม่รับประกันบัตร + รับบัตรหน้าเคาน์เตอร์(หากต้องการเปลี่ยน แจ้งได้เลยนะคะ 💕)\n\n🙏🏻 ขอบคุณมากค่ะ สอบถามเพิ่มเติมได้ตลอดนะคะ 😊`;
+    }
+
+      function parseConfirmInput(raw) {
+        let cols = raw.split('\t');
+            let platform =  (cols[2] || '').trim();
+            let eventName = (cols[0] || '').trim();
+            let zone = (cols[4] || '').trim();
+            let basePrice = (cols[5] || '').trim();
+            let zone_s = (cols[6] || 'แจ้งได้เลยนะคะ').trim();
+            let basePrice_s = (cols[7] || '').trim();
+            let amount = Number((cols[8] || '').trim() || 0);
+            let roundAt = (cols[9] || '').trim();
+            let feePer = Number((cols[18] || '').replace(/[^0-9]/g, '') || 0);
+
+        if (!raw.includes('\t') && raw.includes('\n')) {
+        //   return parseAppSheetInput(raw);
+            const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+            const findLine = (match) => {
+                const idx = lines.findIndex((l) => new RegExp(match, 'i').test(l));
+                return idx >= 0 ? lines[idx + 1] : '';
+            };
+            platform = findLine('^Web Service$') || '';
+            eventName = findLine('^Event$') || lines[0] || '';
+            zone = findLine('โซน|Preferred Zone') || '';
+            basePrice = (findLine('ราคาบัตร|Preferred Price') || '').replace(/[฿$,]/g, '').trim();
+            zone_s = findLine('โซน|Reserved Zone') || '';
+            basePrice_s = (findLine('ราคา(สำรอง)|Reserved Price') || '').replace(/[฿$,]/g, '').trim();
+            amount = Number((findLine('QTY') || '').replace(/[^0-9]/g, '') || 0);
+            roundAt = findLine('รอบวันที่|Round Date') || '';
+            feePer = Number((findLine('Profit|Ticks') || '').replace(/[^0-9]/g, '') || 0);
+        }
+
+        const parsedRound = formatDateFromString(roundAt);
+        const totalFee = feePer * amount;
+        const cleanPrice = formatNumber(basePrice) || '-';
+        const cleanPrice_s = basePrice_s&&(`(${formatNumber(basePrice_s)})`);
+        
+        if (platform == 'AllTicket') {
+            return (`✨ คอนเฟิร์มงาน ${eventName}✨\n
+🎪 รอบวันที่ : ${parsedRound}
+🥇 โซนหลัก : ${zone} (${cleanPrice})
+🥈 โซนสำรอง : ${zone_s} ${cleanPrice_s}
+🎟️ จำนวนบัตร : ${amount} ใบ
+💸 ค่ากด : ${feePer}x${amount} = ${totalFee} บาท\n
+📌 ข้อมูลสำหรับกดบัตร (AllTicket)\nUsername : \nPassword : \nช่องทางการชำระเงิน : \n
+💳 ช่องทางชำระเงิน: บัตรเครดิต, TrueMoney, Alipay, Wechat, Thai QR หรือ ชำระด้วยเงินสดที่ร้าน 7-Eleven) *กรณีชำระด้วยเงินสด ต้องชำระภายใน 30 นาที\n
+📣 หมายเหตุ\n• กดบัตรได้แล้ว ทางร้านจะ DM แจ้งทันที 🎟️\n• ลูกค้าต้อง standby รอชำระเงินค่าบัตรในช่วงเวลาที่กด หากไม่สะดวกฝากทางร้านชำระได้ค่ะ
+📍 เงื่อนไขปัจจุบัน: ไม่รับประกันบัตร + รับบัตรหน้าเคาน์เตอร์(หากต้องการเปลี่ยน แจ้งได้เลยนะคะ 💕)\n
+🙏🏻 ขอบคุณมากค่ะ สอบถามเพิ่มเติมได้ตลอดนะคะ 😊`);
+        }
+        else if(platform == 'EventPop') {
+            return (`✨ คอนเฟิร์มงาน ${eventName}✨\n
+🎪 รอบวันที่ : ${parsedRound}
+🥇 โซนหลัก : ${zone} (${cleanPrice})
+🥈 โซนสำรอง : ${zone_s} ${cleanPrice_s}
+🎟️ จำนวนบัตร : ${amount} ใบ
+💸 ค่ากด : ${feePer}x${amount} = ${totalFee} บาท\n
+📌 รายละเอียดที่ใช้กรอกบนบัตรแต่ละใบ\nชื่อ-นามสกุล :\nเบอร์โทร :\nอีเมลสำหรับรับ E-Ticket :\n
+💳 ช่องทางชำระเงิน: Credit/Debit Card, AMEX, QR PromptPay, Alipay, WeChat Pay\n
+📣 หมายเหตุ\n• งานนี้จะใช้ Account ร้านกดนะคะหากกดบัตรได้แล้วจะแจ้งทาง dm 
+• ลูกค้ามีเวลาจ่ายเงินผ่าน QR Code PromptPay ประมาณ 15 นาที ทางร้านจะแคปรูปส่งไปให้ค่ะ
+📍 เงื่อนไขปัจจุบัน: ไม่รับประกันบัตร + รับบัตรหน้าเคาน์เตอร์(หากต้องการเปลี่ยน แจ้งได้เลยนะคะ 💕)\n
+🙏🏻 ขอบคุณมากค่ะ หากมีอะไรสงสัยถามได้ตลอดเลยนะคะ`)
+        }
+        else if (platform == 'ThaiTicket') {
+            return (`✨ คอนเฟิร์มงาน ${eventName}✨\n
+🎪 รอบวันที่ : ${parsedRound}
+🥇 โซนหลัก : ${zone} (${cleanPrice})
+🥈 โซนสำรอง : ${zone_s} ${cleanPrice_s}
+🎟️ จำนวนบัตร : ${amount} ใบ
+💸 ค่ากด : ${feePer}x${amount} = ${totalFee} บาท\n
+📌 ข้อมูลสำหรับกดบัตร (Thaiticketmajor)\nUsername : \nPassword : \nช่องทางการชำระเงิน : \n
+💳 ช่องทางชำระเงิน: บัตรเครดิต, บัตรเดบิต, True Money Wallet, Shopee Pay, Alipay, Wechat pay, KPay Plus, QR Promtpay จะมี processing fee 3%
+📣 หมายเหตุ\n• กดบัตรได้แล้ว ทางร้านจะ DM แจ้งทันที 🎟️\n• ลูกค้าต้อง standby รอชำระเงินค่าบัตรในช่วงเวลาที่กด หากไม่สะดวกฝากทางร้านชำระได้ค่ะ
+📍 เงื่อนไขปัจจุบัน: ไม่รับประกันบัตร + รับบัตรหน้าเคาน์เตอร์(หากต้องการเปลี่ยน แจ้งได้เลยนะคะ 💕)\n
+🙏🏻 ขอบคุณมากค่ะ สอบถามเพิ่มเติมได้ตลอดนะคะ 😊`);
+        } else {
+            return (`✨ คอนเฟิร์มงาน ${eventName}✨\n
+🎪 รอบวันที่ : ${parsedRound}
+🥇 โซนหลัก : ${zone} (${cleanPrice})
+🥈 โซนสำรอง : ${zone_s} ${cleanPrice_s}
+🎟️ จำนวนบัตร : ${amount} ใบ
+💸 ค่ากด : ${feePer}x${amount} = ${totalFee} บาท\n
+📌 ข้อมูลสำหรับกดบัตร (${platform})\nUsername : \nPassword : \nช่องทางการชำระเงิน : \n
+💳 ช่องทางชำระเงิน: 
+📣 หมายเหตุ\n• กดบัตรได้แล้ว ทางร้านจะ DM แจ้งทันที 🎟️\n• ลูกค้าต้อง standby รอชำระเงินค่าบัตรในช่วงเวลาที่กด หากไม่สะดวกฝากทางร้านชำระได้ค่ะ
+📍 เงื่อนไขปัจจุบัน: ไม่รับประกันบัตร + รับบัตรหน้าเคาน์เตอร์(หากต้องการเปลี่ยน แจ้งได้เลยนะคะ 💕)\n
+🙏🏻 ขอบคุณมากค่ะ สอบถามเพิ่มเติมได้ตลอดนะคะ 😊`);
+        }
+      }
+
+
+      document.addEventListener('DOMContentLoaded', function() {
+        const input = document.getElementById('comfirmInput');
+        const output = document.getElementById('comfirmOutput');
+        const button = document.getElementById('comfirmParse');
+        button.addEventListener('click', function() {
+          if (!input.value) {
+            output.textContent = 'กรุณาวางข้อความในช่องก่อน';
+            return;
+          }
+          output.textContent = parseConfirmInput((input.value).trim());
+        });
+
+        document.getElementById('comfirmCopy').addEventListener('click', async () => {
+            const text = document.getElementById('comfirmOutput').textContent;
+            const status = document.getElementById('status');
+
+            try {
+                await navigator.clipboard.writeText(text);
+                status.textContent = 'Copied!';
+                
+                setTimeout(() => status.textContent = '', 1500);
+            } catch (err) {
+                status.textContent = 'Failed to copy';
+            }
+        });
+
+        const sample = '		Duang With You EP.9 Presented by iQIYI	22/3/2026, 10:00:00	AllTicket	@pomistpamm	A6,A7,A2,A3	2,000			2	3/28/2026									350	Waiting																			';
+        const sample2 = `Event
+Duang With You EP.9 Presented by iQIYI
+วันที่กด- เวลา (รอบ)
+22/3/2026 10:00
+Add to calendar
+Web Service
+AllTicket
+แอคทวิต / Account Twitter
+@pomistpamm
+โซน / Preferred Zone
+A6,A7,A2,A3
+ราคาบัตร / Preferred Price
+฿2,000
+QTY
+2
+รอบวันที่
+28/3/2026
+Profit / Ticks.
+฿350
+Queue Status
+Waiting`
+        // input.value = sample2;
+        // input2.value = sample2;
+        // output.textContent = parseConfirmInput(input2.value);
+      });
+    </script>
+  </body>
+</html>
