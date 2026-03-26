@@ -105,7 +105,7 @@
             eventName = findLine('^Event$') || lines[0] || '';
             zone = findLine('Preferred Zone') || '';
             basePrice = (findLine('ราคาบัตร|Preferred Price') || '').replace(/[฿$,]/g, '').trim();
-            zone_s = findLine('Reserved Zone') || '';
+            zone_s = findLine('Reserved Zone') || 'แจ้งได้เลยนะคะ';
             basePrice_s = (findLine('ราคา(สำรอง)|Reserved Price') || '').replace(/[฿$,]/g, '').trim();
             amount = Number((findLine('QTY') || '').replace(/[^0-9]/g, '') || 0);
             roundAt = findLine('รอบวันที่|Round Date') || '';
