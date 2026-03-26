@@ -54,7 +54,7 @@
           <pre id="feeOutput" style="white-space:pre-wrap;background:#f8f9fa;border:1px solid #ddd;padding:16px;margin-top:14px;border-radius:8px;min-height:120px;">ยังไม่มีผลลัพธ์</pre>
           <button id="feeCopy" class="btn btn-info" style="margin-top:12px;">คัดลอกข้อความยอด</button>
           <span id="feeStatus"></span>
-          <pre id="thankYou" style="white-space:pre-wrap;background:#f8f9fa;border:1px solid #ddd;padding:16px;margin-top:14px;border-radius:8px;min-height:120px;">ได้รับยอดแล้วค่า ดูคอนเสิร์ตให้สนุกนะคะ ขอบคุณที่สนใจร้านเรา ถ้าไม่รบกวนฝากรีวิวร้านในแท้ก #รีวิวMineTickets ขอบคุณมาก ๆ เลยค่ะ🙏</pre>
+          <pre id="thankYou" style="white-space:pre-wrap;background:#f8f9fa;border:1px solid #ddd;padding:16px;margin-top:14px;border-radius:8px;min-height:120px;">ได้รับยอดแล้วค่า ดูคอนเสิร์ตให้สนุกนะคะ ขอบคุณที่สนใจร้านเรา ถ้าไม่รบกวนฝากรีวิวร้านในแท้ก #รีวิวMineTickets ขอบคุณมากๆเลยค่ะ🙏</pre>
           <button id="thankYouCopy" class="btn btn-info" style="margin-top:12px;">คัดลอกข้อความขอบคุณ</button>
           <span id="thankYouStatus"></span>
     <script>
@@ -103,9 +103,9 @@
             };
             platform = findLine('^Web Service$') || '';
             eventName = findLine('^Event$') || lines[0] || '';
-            zone = findLine('โซน|Preferred Zone') || '';
+            zone = findLine('Preferred Zone') || '';
             basePrice = (findLine('ราคาบัตร|Preferred Price') || '').replace(/[฿$,]/g, '').trim();
-            zone_s = findLine('โซน|Reserved Zone') || '';
+            zone_s = findLine('Reserved Zone') || '';
             basePrice_s = (findLine('ราคา(สำรอง)|Reserved Price') || '').replace(/[฿$,]/g, '').trim();
             amount = Number((findLine('QTY') || '').replace(/[^0-9]/g, '') || 0);
             roundAt = findLine('รอบวันที่|Round Date') || '';
