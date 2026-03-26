@@ -22,9 +22,41 @@
           <pre id="comfirmOutput" style="white-space:pre-wrap;background:#f8f9fa;border:1px solid #ddd;padding:16px;margin-top:14px;border-radius:8px;min-height:240px;">ยังไม่มีผลลัพธ์</pre>
           <button id="comfirmCopy" class="btn btn-info" style="margin-top:12px;">คัดลอกข้อความ</button>
           <span id="status"></span>
-        </div>
-      </div>
-    </div>
+          <div style="display: flex; gap: 10px; align-items: center; margin-top: 20px;">
+            <div style="flex: 1;">
+              <label for="priceFee">ค่ากดบัตร</label>
+              <input id="priceFee" type="number" style="width:100%;font-size:16px;padding:10px;border:1px solid #ccc;border-radius:8px;" placeholder="350">
+            </div>
+            <div style="flex: 1;">
+              <label for="webFee">ค่าธรรมเนียมจากเว็บ</label>
+              <input id="webFee" type="number" style="width:100%;font-size:16px;padding:10px;border:1px solid #ccc;border-radius:8px;" placeholder="156">
+            </div>
+            <div style="flex: 1;">
+              <label for="ticketFee">ค่าบัตร</label>
+              <input id="ticketFee" type="number" style="width:100%;font-size:16px;padding:10px;border:1px solid #ccc;border-radius:8px;" placeholder="0">
+            </div>
+            <div style="flex: 1;">
+              <label for="shippingFee">ค่าส่งบัตร</label>
+              <input id="shippingFee" type="number" style="width:100%;font-size:16px;padding:10px;border:1px solid #ccc;border-radius:8px;" placeholder="0">
+            </div>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center; margin-top: 20px;">
+            <div style="flex: 1;">
+              <label for="ticketQty">จำนวนบัตร</label>
+              <input id="ticketQty" type="number" style="width:100%;font-size:16px;padding:10px;border:1px solid #ccc;border-radius:8px;" placeholder="0">
+            </div>
+            <div style="flex: 1;">
+              <label for="paidAmount">ลูกค้าโอนมา</label>
+              <input id="paidAmount" type="number" style="width:100%;font-size:16px;padding:10px;border:1px solid #ccc;border-radius:8px;" placeholder="0">
+            </div>
+          </div>
+          <button id="generateFeeForm" class="btn btn-success" style="margin-top:12px;">สร้างฟอร์มแจ้งยอด</button>
+          <pre id="feeOutput" style="white-space:pre-wrap;background:#f8f9fa;border:1px solid #ddd;padding:16px;margin-top:14px;border-radius:8px;min-height:120px;">ยังไม่มีผลลัพธ์</pre>
+          <button id="feeCopy" class="btn btn-info" style="margin-top:12px;">คัดลอกข้อความยอด</button>
+          <span id="feeStatus"></span>
+          <pre id="thankYou" style="white-space:pre-wrap;background:#f8f9fa;border:1px solid #ddd;padding:16px;margin-top:14px;border-radius:8px;min-height:120px;">ได้รับยอดแล้วค่า ดูคอนเสิร์ตให้สนุกนะคะ ขอบคุณที่สนใจร้านเรา ถ้าไม่รบกวนฝากรีวิวร้านในแท้ก #รีวิวMineTickets ขอบคุณมาก ๆ เลยค่ะ🙏</pre>
+          <button id="thankYouCopy" class="btn btn-info" style="margin-top:12px;">คัดลอกข้อความขอบคุณ</button>
+          <span id="thankYouStatus"></span>
     <script>
       function formatDateFromString(text) {
         const dt = new Date(text);
@@ -48,31 +80,6 @@
     function formatNumber(num) {
         const clean = String(num).replace(/,/g, '');
         return Number(clean).toLocaleString('en-US');
-    }
-
-    function parseAppSheetInput(raw) {
-        const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-        const findLine = (match) => {
-            const idx = lines.findIndex((l) => new RegExp(match, 'i').test(l));
-            return idx >= 0 ? lines[idx + 1] : '';
-        };
-
-        const eventName = findLine('^Event$') || lines[0] || '';
-        const platform = findLine('^Web Service$') || 'AllTicket';
-        const zone = findLine('โซน|Preferred Zone') || '';
-        const basePrice = (findLine('ราคาบัตร|Preferred Price') || '').replace(/[฿$,]/g, '').trim();
-        const zone_s = findLine('โซน|Reserved Zone') || '';
-        const basePrice_s = (findLine('ราคา(สำรอง)|Reserved Price') || '').replace(/[฿$,]/g, '').trim();
-        const amount = Number((findLine('QTY') || '').replace(/[^0-9]/g, '') || 0);
-        const roundAt = findLine('รอบวันที่|Round Date') || '';
-        const feePer = Number((findLine('Profit|Ticks') || '').replace(/[^0-9]/g, '') || 0);
-
-        const parsedRound = formatDateFromString(roundAt);
-        const totalFee = feePer * amount;
-        const cleanPrice = formatNumber(basePrice) || '-';
-        const cleanPrice_s = basePrice_s&&(`(${formatNumber(basePrice_s)})`);
-
-        return `✨ คอนเฟิร์มงาน ${eventName}✨\n\n🎪 รอบวันที่ : ${parsedRound}\n🥇 โซนหลัก : ${zone} (${cleanPrice})\n🎟️ จำนวนบัตร : ${amount} ใบ\n💸 ค่ากด : ${feePer}*${amount} = ${totalFee} บาท\n\n📌 ข้อมูลสำหรับกดบัตร (${platform})\nUsername : \nPassword : \nช่องทางการชำระเงิน : \n\n💳 ช่องทางชำระเงิน: บัตรเครดิต, TrueMoney, Alipay, Wechat, Thai QR หรือ ชำระด้วยเงินสดที่ร้าน 7-Eleven) *กรณีชำระด้วยเงินสด ต้องชำระภายใน 30 นาที\n\n📣 หมายเหตุ\n• กดบัตรได้แล้ว ทางร้านจะ DM แจ้งทันที 🎟️\n• ลูกค้าต้อง standby รอชำระเงินค่าบัตรในช่วงเวลากด หากไม่สะดวกฝากทางร้านชำระได้ค่ะ\n📍 เงื่อนไขปัจจุบัน: ไม่รับประกันบัตร + รับบัตรหน้าเคาน์เตอร์(หากต้องการเปลี่ยน แจ้งได้เลยนะคะ 💕)\n\n🙏🏻 ขอบคุณมากค่ะ สอบถามเพิ่มเติมได้ตลอดนะคะ 😊`;
     }
 
       function parseConfirmInput(raw) {
@@ -191,31 +198,125 @@
             }
         });
 
-        const sample = '		Duang With You EP.9 Presented by iQIYI	22/3/2026, 10:00:00	AllTicket	@pomistpamm	A6,A7,A2,A3	2,000			2	3/28/2026									350	Waiting																			';
-        const sample2 = `Event
-Duang With You EP.9 Presented by iQIYI
-วันที่กด- เวลา (รอบ)
-22/3/2026 10:00
-Add to calendar
-Web Service
-AllTicket
-แอคทวิต / Account Twitter
-@pomistpamm
-โซน / Preferred Zone
-A6,A7,A2,A3
-ราคาบัตร / Preferred Price
-฿2,000
-QTY
-2
-รอบวันที่
-28/3/2026
-Profit / Ticks.
-฿350
-Queue Status
-Waiting`
-        // input.value = sample2;
-        // input2.value = sample2;
-        // output.textContent = parseConfirmInput(input2.value);
+        document.getElementById('generateFeeForm').addEventListener('click', () => {
+            const priceFee = Number(document.getElementById("priceFee").value) || 0;
+            const webFee = Number(document.getElementById("webFee").value) || 0;
+            const ticketFee = Number(document.getElementById("ticketFee").value) || 0;
+            const shippingFee = Number(document.getElementById("shippingFee").value) || 0;
+
+            const qty = Number(document.getElementById("ticketQty").value) || 1;
+            const paid = Number(document.getElementById("paidAmount").value) || 0;
+
+            let parts = [];
+            let labels = [];
+
+            if (priceFee > 0) {
+                parts.push(priceFee);
+                labels.push("ค่ากดบัตร");
+            }
+            if (webFee > 0) {
+                parts.push(webFee);
+                labels.push("ค่าธรรมเนียมจากเว็บ");
+            }
+            if (ticketFee > 0) {
+                parts.push({ price: ticketFee, qty: qty });
+                labels.push("ค่าบัตร");
+            }
+            if (shippingFee > 0) {
+                parts.push(shippingFee);
+                labels.push("ค่าส่งบัตร");
+            }
+
+            // รวมยอด
+            let total = 0;
+            let displayParts = [];
+
+            parts.forEach(p => {
+                if (typeof p === "number") {
+                    total += p;
+                    displayParts.push(formatNumber(p));
+                } else {
+                    const subtotal = p.price * p.qty;
+                    total += subtotal;
+                    displayParts.push(`(${formatNumber(p.price)} × ${p.qty})`);
+                }
+            });
+
+            // label
+            let labelText = "";
+            if (labels.length === 1) {
+                labelText = labels[0];
+            } else if (labels.length > 1) {
+                labelText = labels.join(", ").replace(/, ([^,]*)$/, " และ$1");
+            }
+
+            let text = "";
+
+            // 🔥 กรณีมีเงินโอน → สรุปแบบเต็ม
+            if (paid > 0) {
+                const refund = paid - total;
+
+                text = `ขออนุญาตสรุปยอด${labelText}นะคะ\n💳 ยอดชำระ: ${displayParts.join(" + ")} = ${formatNumber(total)} บาท\n💰 ลูกค้าโอนล่วงหน้า: ${formatNumber(paid)} บาท`;
+
+                if (refund > 0) {
+                text += `\n🔁 คืนเงินส่วนต่าง: ${formatNumber(refund)} บาท\nรบกวนแจ้งเลขที่บัญชีเพื่อโอนเงินคืนได้เลยค่ะ 🙏`;
+                } else if (refund < 0) {
+                text += `\n⚠️ ยอดคงเหลือที่ต้องชำระเพิ่ม: ${formatNumber(Math.abs(refund))} บาท`;
+                }
+
+            } else {
+                // 🔥 กรณีปกติ
+                let summaryText = "";
+                if (displayParts.length === 1) {
+                summaryText = `${formatNumber(total)} บาท`;
+                } else {
+                summaryText = `${displayParts.join(" + ")} = ${formatNumber(total)} บาท`;
+                }
+
+                text = `ขออนุญาตแจ้งยอด${labelText}ค่ะ\n💳 ยอดชำระ ${summaryText}`;
+            }
+
+            text+= `\n\nธ.กสิกร(KBank)\nเลขที่บัญชี : 061-3-47929-5\nชื่อบัญชี : Pimvanat K.`
+
+            // const output = `ขออนุญาตแจ้งยอด${labelText}ค่ะ\nยอดชำระ ${summaryText}\n\nธ.กสิกร(KBank)\nเลขที่บัญชี : 061-3-47929-5\nชื่อบัญชี : Pimvanat K.`;
+            document.getElementById('feeOutput').textContent = text;
+        });
+
+        document.getElementById('feeCopy').addEventListener('click', async () => {
+            const text = document.getElementById('feeOutput').textContent;
+            const status = document.getElementById('feeStatus');
+
+            try {
+                await navigator.clipboard.writeText(text);
+                status.textContent = 'Copied!';
+                
+                setTimeout(() => status.textContent = '', 1500);
+            } catch (err) {
+                status.textContent = 'Failed to copy';
+            }
+        });
+
+        // Set sample values
+        document.getElementById('priceFee').value = '350';
+        document.getElementById('webFee').value = '0';
+        document.getElementById('ticketFee').value = '0';
+        document.getElementById('shippingFee').value = '0';
+        // Auto generate on load
+        document.getElementById('generateFeeForm').click();
+
+        document.getElementById('thankYouCopy').addEventListener('click', async () => {
+            const text = document.getElementById('thankYou').textContent;
+            const status = document.getElementById('thankYouStatus');
+
+            try {
+                await navigator.clipboard.writeText(text);
+                status.textContent = 'Copied!';
+                
+                setTimeout(() => status.textContent = '', 1500);
+            } catch (err) {
+                status.textContent = 'Failed to copy';
+            }
+        });
       });
     </script>
   </body>
