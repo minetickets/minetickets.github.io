@@ -261,7 +261,7 @@
                 if (refund > 0) {
                 text += `\n🔁 คืนเงินส่วนต่าง: ${formatNumber(refund)} บาท\nรบกวนแจ้งเลขที่บัญชีเพื่อโอนเงินคืนได้เลยค่ะ 🙏`;
                 } else if (refund < 0) {
-                text += `\n⚠️ ยอดคงเหลือที่ต้องชำระเพิ่ม: ${formatNumber(Math.abs(refund))} บาท`;
+                text += `\n⚠️ ยอดคงเหลือที่ต้องชำระเพิ่ม: ${formatNumber(Math.abs(refund))} บาท\n\nธ.กสิกร(KBank)\nเลขที่บัญชี : 061-3-47929-5\nชื่อบัญชี : Pimvanat K.`;
                 }
 
             } else {
@@ -273,10 +273,10 @@
                 summaryText = `${displayParts.join(" + ")} = ${formatNumber(total)} บาท`;
                 }
 
-                text = `ขออนุญาตแจ้งยอด${labelText}ค่ะ\n💳 ยอดชำระ ${summaryText}`;
+                text = `ขออนุญาตแจ้งยอด${labelText}ค่ะ\n💳 ยอดชำระ ${summaryText}\n\nธ.กสิกร(KBank)\nเลขที่บัญชี : 061-3-47929-5\nชื่อบัญชี : Pimvanat K.`;
             }
 
-            text+= `\n\nธ.กสิกร(KBank)\nเลขที่บัญชี : 061-3-47929-5\nชื่อบัญชี : Pimvanat K.`
+            // text+= `\n\nธ.กสิกร(KBank)\nเลขที่บัญชี : 061-3-47929-5\nชื่อบัญชี : Pimvanat K.`
 
             // const output = `ขออนุญาตแจ้งยอด${labelText}ค่ะ\nยอดชำระ ${summaryText}\n\nธ.กสิกร(KBank)\nเลขที่บัญชี : 061-3-47929-5\nชื่อบัญชี : Pimvanat K.`;
             document.getElementById('feeOutput').textContent = text;
